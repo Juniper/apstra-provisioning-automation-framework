@@ -1,0 +1,13 @@
+aos_target: apstra_server_1
+customer: DEMO
+domain: SINGLE_PROJECT
+first_execution: null
+first_execution_reverted: true
+interactive: true
+post_commit_action: commit
+post_commit_comment: Initial Deployment
+post_rollback: false
+pre_commit_action: commit
+pre_commit_comment: ''
+project: ALL_IN_ONE
+terraform_command: terraform apply

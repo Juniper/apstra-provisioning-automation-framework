@@ -1,0 +1,56 @@
+# ********************************************************
+#
+# Project: Apstra Provisioning Automation Framework
+#
+# Copyright (c) Juniper Networks, Inc., 2025. All rights reserved.
+#
+# Notice and Disclaimer: This code is licensed to you under the Apache 2.0 License (the "License"). You may not use this code except in compliance with the License. This code is not an official Juniper product. You can obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.html
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
+#
+# ********************************************************
+#
+# DESCRIPTION: This Dockerfile defines the process for creating a Docker image
+# for the Apstra Provider Automation Framework. It starts with an Python Alpine based image,
+# installs the required dependencies and installs necessary Python libraries.
+# Terraform is also installed as part of the setup.
+# The image is designed to facilitate running the Apstra automation scripts in a controlled 
+# environment, ensuring consistent deployments.
+#
+# ********************************************************
+
+# VERSIONS
+
+# --- Use Python as the container base image (based on Alpine)
+FROM python:3.12.9-alpine3.21
+
+# --- Define build-time arguments for package versions to be installed with pip within the virtual environment
+#     Not more than these three are required here, since the rest are retrieved from requirements.yaml
+ARG PYTHON3_PIP_VERSION=25.0.1
+ARG PYYAML_VERSION=6.0.2
+ARG JINJA2_VERSION=3.1.5
+ARG CURL_VERSION=8.12.1-r1
+
+# ********************************************************
+
+# --- Install Curl required for later installation of Terraform
+RUN apk add --no-cache curl=${CURL_VERSION}
+
+# --- Set working directory and copy required files into the container
+WORKDIR /apaf
+RUN echo "Copying necessary files into the container"
+COPY requirements.yaml docker_install_requirements.j2 docker_install_requirements.py docker_install_terraform.py .
+
+# --- Install Python packages with pinned versions using pip
+#     Only `pyyaml` and `jinja2` are installed explicitly; others are handled via requirements.yaml
+RUN echo "Installing Python packages with pip" \
+    && pip install --upgrade pip==${PYTHON3_PIP_VERSION} \
+        pyyaml==${PYYAML_VERSION} \
+        jinja2==${JINJA2_VERSION}  \
+    && python3 /apaf/docker_install_requirements.py
+
+# --- Install Terraform using a helper script
+RUN echo "Installing Terraform using the dedicated Python script" \
+    && python3 /apaf/docker_install_terraform.py

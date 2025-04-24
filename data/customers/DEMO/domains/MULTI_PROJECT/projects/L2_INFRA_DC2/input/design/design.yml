@@ -1,0 +1,44 @@
+# ********************************************************
+#
+# Project: Apstra Provisioning Automation Framework
+#
+# Copyright (c) Juniper Networks, Inc., 2025. All rights reserved.
+#
+# Notice and Disclaimer: This code is licensed to you under the Apache 2.0 License (the "License"). You may not use this code except in compliance with the License. This code is not an official Juniper product. You can obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.html
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
+#
+# ********************************************************
+#
+# DISCLAIMER: The data contained in this YAML file is entirely fabricated and
+# intended solely for demo purposes. Any resemblance to real data is purely
+# coincidental. All values are simulated and are not
+# linked to any actual systems or environments.
+#
+# ********************************************************
+
+# ---------------------------------------------------------------------------- #
+#                                  Configlets                                  #
+# ---------------------------------------------------------------------------- #
+configlets:
+  - name: MULTI-DC2-INFRA_EXAMPLE
+    generators:
+      - config_style : junos
+        section: top_level_hierarchical
+        template_file: MULTI-DC2-INFRA_EXAMPLE.j2
+
+# ---------------------------------------------------------------------------- #
+#                                 Property Sets                                #
+# ---------------------------------------------------------------------------- #
+property_sets:
+
+  - name: MULTI-DC2-INFRA
+    data:
+      - property_key: PSLIST_SNMP_CLIENTS_SUBNETS
+        property_value: 172.16.84.0/27,172.16.94.0/27
+      - property_key: PSLIST_SNMP_TRAP_COLLECTORS
+        property_value: 172.16.17.134,172.16.17.135,172.16.17.136
+      - property_key: SNMP_LOCATION
+        property_value: Location_DC2

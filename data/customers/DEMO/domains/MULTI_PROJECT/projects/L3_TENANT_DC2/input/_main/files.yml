@@ -1,0 +1,98 @@
+# ********************************************************
+#
+# Project: Apstra Provisioning Automation Framework
+#
+# Copyright (c) Juniper Networks, Inc., 2025. All rights reserved.
+#
+# Notice and Disclaimer: This code is licensed to you under the Apache 2.0 License (the "License"). You may not use this code except in compliance with the License. This code is not an official Juniper product. You can obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.html
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
+#
+# ********************************************************
+#
+# DISCLAIMER: The data contained in this YAML file is entirely fabricated and
+# intended solely for demo purposes. Any resemblance to real data is purely
+# coincidental. All values are simulated and are not
+# linked to any actual systems or environments.
+#
+# ********************************************************
+
+# ---------------------------------------------------------------------------- #
+#                     Project File & Directory Structure                       #
+# ---------------------------------------------------------------------------- #
+
+# ******************************************************************************
+#  
+# This YAML file allows setting the directory and filename names  
+# used across all files and subdirectories within the `data` folder.  
+#
+# By defining these paths here, consistency is maintained,  
+# making it easier to reference and manage project data.  
+#
+# ******************************************************************************
+
+# *****************************
+#            INPUT            #
+# *****************************
+
+# YAML file containing the 'parent_project' map (dictionary)
+parent_projects:
+  directory: "_main"
+  filename: "parent_projects.yml"
+
+# YAML file containing the 'private_data' map (dictionary)
+private_data: 
+  directory: &dir_private "private"
+  filename: "private_data.yml"
+
+# YAML file containing the 'aos_login' map (dictionary)
+credentials: 
+  directory: *dir_private
+  filename: "credentials.yml"
+
+# YAML file containing the 'asn_pools', 'vni_pools' and 'ipv4_pools' maps (dictionaries)
+resources: 
+  directory: "resources"
+  filename: "resources.yml"
+
+# YAML file containing the 'logical_devices', 'racks', 'templates' and other maps (dictionaries)
+design: 
+  directory: "design"
+  filename: "design.yml"
+
+# YAML file containing the 'blueprints' map (dictionary)
+blueprints: 
+  directory: "blueprints"
+  filename: "blueprints.yml"
+
+# Directory containing the configlet files
+configlets:
+  directory: "configlets"
+
+# TGZ file containing the reverted version of the input folder
+input_tgz_reverted_path: 
+  directory: "__tmp__"
+  filename: "input.tgz.reverted"
+
+# *****************************
+#            OUTPUT           #
+# *****************************
+
+# Directory containing the executions
+executions:
+  directory: "executions"
+
+# Directory containing the archived executions
+archive:
+  directory: "archive"
+
+# Directory containing the snapshot files
+apstra_snapshot:
+  directory: "apstra_snapshot"
+
+# Project log file containing the log of all the executions in the project
+project_log: 
+  directory: "project_log"
+  filename: "project_executions.log"

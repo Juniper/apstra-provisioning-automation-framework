@@ -1,0 +1,342 @@
+# ********************************************************
+#
+# Project: Apstra Provisioning Automation Framework
+#
+# Copyright (c) Juniper Networks, Inc., 2025. All rights reserved.
+#
+# Notice and Disclaimer: This code is licensed to you under the Apache 2.0 License (the "License"). You may not use this code except in compliance with the License. This code is not an official Juniper product. You can obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.html
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
+#
+# ********************************************************
+#
+# DISCLAIMER: The data contained in this YAML file is entirely fabricated and
+# intended solely for demo purposes. Any resemblance to real data is purely
+# coincidental. All values are simulated and are not
+# linked to any actual systems or environments.
+#
+# ********************************************************
+
+# ---------------------------------------------------------------------------- #
+#                                Logical Devices                               #
+# ---------------------------------------------------------------------------- #
+logical_devices:
+  pre_existing:
+    - slicer-7x10-1
+  #   - AOS-7x10-Spine
+  #   - AOS-48x10+6x40-1
+  #   - AOS-1x10-1
+  #   - AOS-2x10-1
+  user_defined:
+
+    - name: SINGLE-LD-QFX5120-32C-LEAF
+      panels:
+        - rows: 2
+          columns: 53
+          port_groups:
+            - port_count: 96
+              port_speed: 25G
+              port_roles:
+                - access
+                - unused
+                - generic
+            - port_count: 8
+              port_speed: 100G
+              port_roles:
+                - superspine
+                - spine
+            - port_count: 2
+              port_speed: 10G
+              port_roles:
+                - access
+                - unused
+                - generic
+    - name: SINGLE-LD-QFX5120-32C-SPINE
+      panels:
+        - rows: 2
+          columns: 17
+          port_groups:
+            - port_count: 32
+              port_speed: 100G
+              port_roles:
+                - superspine
+                - leaf
+                - unused
+                - generic
+            - port_count: 2
+              port_speed: 10G
+              port_roles:
+                - access
+                - unused
+                - generic
+    - name: SINGLE-LD-QFX10002-BORDER-LEAF
+      panels:
+        - rows: 2
+          columns: 17
+          port_groups:
+            - port_count: 24
+              port_speed: 10G
+              port_roles:
+                - access
+                - unused
+                - generic
+            - port_count: 10
+              port_speed: 100G
+              port_roles:
+                - superspine
+                - spine
+                - access
+                - unused
+                - generic
+
+ # ---------------------------------------------------------------------------- #
+ #                                Interface Maps                                #
+ # ---------------------------------------------------------------------------- #
+interface_maps:
+  pre_existing:
+    - Juniper_vEX__slicer-7x10-1
+  user_defined:
+    - name: SINGLE-IM-QFX5120-32C-LEAF
+      logical_device: SINGLE-LD-QFX5120-32C-LEAF
+      device_profile_id: Juniper_QFX5120-32C_Junos
+      interface_mapping_ranges:
+        - ld_panel: 1
+          ld_first_port: 1
+          phy_prefix: et-0/0/
+          phy_first_port: 0
+          count: 96
+          channelized: True
+          channel_prefix: ":"
+          channel_first_port: 0
+          channel_count: 4
+        - ld_panel: 1
+          ld_first_port: 97
+          phy_prefix: et-0/0/
+          phy_first_port: 24
+          count: 8
+          channelized: False
+          transformation_id: 1
+        - ld_panel: 1
+          ld_first_port: 105
+          phy_prefix: xe-0/0/
+          phy_first_port: 32
+          count: 2
+          channelized: False
+          transformation_id: 1
+    - name: SINGLE-IM-QFX5120-32C-SPINE
+      logical_device: SINGLE-LD-QFX5120-32C-SPINE
+      device_profile_id: Juniper_QFX5120-32C_Junos
+      interface_mapping_ranges:
+        - ld_panel: 1
+          ld_first_port: 1
+          phy_prefix: et-0/0/
+          phy_first_port: 0
+          count: 32
+          channelized: False
+        - ld_panel: 1
+          ld_first_port: 33
+          phy_prefix: xe-0/0/
+          phy_first_port: 32
+          count: 2
+          channelized: False
+    - name: SINGLE-IM-QFX10002-BORDER-LEAF
+      logical_device: SINGLE-LD-QFX10002-BORDER-LEAF
+      device_profile_id: Juniper_QFX10002-36Q_Junos
+      interface_mappings:
+      - logical_device_port: 1/1
+        physical_interface_name: xe-0/0/0:0
+      - logical_device_port: 1/2
+        physical_interface_name: xe-0/0/0:1
+      - logical_device_port: 1/3
+        physical_interface_name: xe-0/0/0:2
+      - logical_device_port: 1/4
+        physical_interface_name: xe-0/0/0:3
+      - logical_device_port: 1/5
+        physical_interface_name: xe-0/0/1:0
+      - logical_device_port: 1/6
+        physical_interface_name: xe-0/0/1:1
+      - logical_device_port: 1/7
+        physical_interface_name: xe-0/0/1:2
+      - logical_device_port: 1/8
+        physical_interface_name: xe-0/0/1:3
+      - logical_device_port: 1/9
+        physical_interface_name: xe-0/0/2:0
+      - logical_device_port: 1/10
+        physical_interface_name: xe-0/0/2:1
+      - logical_device_port: 1/11
+        physical_interface_name: xe-0/0/2:2
+      - logical_device_port: 1/12
+        physical_interface_name: xe-0/0/2:3
+      - logical_device_port: 1/13
+        physical_interface_name: xe-0/0/33:0
+      - logical_device_port: 1/14
+        physical_interface_name: xe-0/0/33:1
+      - logical_device_port: 1/15
+        physical_interface_name: xe-0/0/33:2
+      - logical_device_port: 1/16
+        physical_interface_name: xe-0/0/33:3
+      - logical_device_port: 1/17
+        physical_interface_name: xe-0/0/34:0
+      - logical_device_port: 1/18
+        physical_interface_name: xe-0/0/34:1
+      - logical_device_port: 1/19
+        physical_interface_name: xe-0/0/34:2
+      - logical_device_port: 1/20
+        physical_interface_name: xe-0/0/34:3
+      - logical_device_port: 1/21
+        physical_interface_name: xe-0/0/35:0
+      - logical_device_port: 1/22
+        physical_interface_name: xe-0/0/35:1
+      - logical_device_port: 1/23
+        physical_interface_name: xe-0/0/35:2
+      - logical_device_port: 1/24
+        physical_interface_name: xe-0/0/35:3
+      - logical_device_port: 1/25
+        physical_interface_name: et-0/0/5
+      - logical_device_port: 1/26
+        physical_interface_name: et-0/0/7
+      - logical_device_port: 1/27
+        physical_interface_name: et-0/0/11
+      - logical_device_port: 1/28
+        physical_interface_name: et-0/0/13
+      - logical_device_port: 1/29
+        physical_interface_name: et-0/0/17
+      - logical_device_port: 1/30
+        physical_interface_name: et-0/0/19
+      - logical_device_port: 1/31
+        physical_interface_name: et-0/0/23
+      - logical_device_port: 1/32
+        physical_interface_name: et-0/0/25
+      - logical_device_port: 1/33
+        physical_interface_name: et-0/0/29
+      - logical_device_port: 1/34
+        physical_interface_name: et-0/0/31
+
+ # ---------------------------------------------------------------------------- #
+ #                                     Racks                                    #
+ # ---------------------------------------------------------------------------- #
+racks:
+
+  - name: SINGLE-TERRAFORM
+    description: "Dummy empty rack used as a placeholder to create empty rack templates"
+    fabric_connectivity_design: l3clos
+    leaf_switches:
+      - name: LEAF_PAIR
+        logical_device: slicer-7x10-1
+        spine_link_count: 1
+        spine_link_speed: 10G
+        # redundancy_protocol: esi
+        # tags:
+        # - LEAF
+        # - ACCESS_LEAF
+  - name: SINGLE-RACK_2B2LF
+    description: "Rack with 2 TOR ESI Leafs + 2 Border Leafs"
+    fabric_connectivity_design: l3clos
+    leaf_switches:
+      - name: LEAF_PAIR
+        logical_device: slicer-7x10-1
+        spine_link_count: 1
+        spine_link_speed: 10G
+        redundancy_protocol: esi
+        # tags:
+        # - LEAF
+        # - ACCESS_LEAF
+      - name: BORDER_LEAF_PAIR
+        logical_device: slicer-7x10-1
+        spine_link_count: 1
+        spine_link_speed: 10G
+        redundancy_protocol: esi
+        # tags:
+        # - LEAF
+        # - BORDER_LEAF
+  - name: SINGLE-RACK_2LF
+    description: "Rack with 2 TOR ESI Leafs + 2 Border Leafs"
+    fabric_connectivity_design: l3clos
+    leaf_switches:
+      - name: LEAF_PAIR
+        logical_device: slicer-7x10-1
+        spine_link_count: 1
+        spine_link_speed: 10G
+        redundancy_protocol: esi
+        # tags:
+        # - LEAF
+        # - ACCESS_LEAF
+
+ # ---------------------------------------------------------------------------- #
+ #                                   Templates                                  #
+ # ---------------------------------------------------------------------------- #
+# A single placeholder template is defined, consisting of a single placeholder dummy rack. All blueprints will be based on this template for their creation, incorporating their own racks within each specific blueprint.
+templates:
+
+  - name: SINGLE-TEMPLATE
+    asn_allocation_scheme: unique
+    overlay_control_protocol: evpn
+    spine:
+      count: 2
+      logical_device: slicer-7x10-1
+    racks:
+      - name: SINGLE-TERRAFORM
+        count: 1
+
+# ---------------------------------------------------------------------------- #
+#                                  Configlets                                  #
+# ---------------------------------------------------------------------------- #
+configlets:
+
+  - name: SINGLE-SNMP
+    generators:
+      - config_style : junos
+        section: top_level_hierarchical
+        template_file: SINGLE-SNMP.j2
+
+  - name: SINGLE-DC1-INFRA_EXAMPLE
+    generators:
+      - config_style : junos
+        section: top_level_hierarchical
+        template_file: SINGLE-DC1-INFRA_EXAMPLE.j2
+  - name: SINGLE-DC1-TENANT_EXAMPLE
+    generators:
+      - config_style : junos
+        section: top_level_hierarchical
+        template_file: SINGLE-DC1-INFRA_EXAMPLE.j2
+
+  - name: SINGLE-DC2-INFRA_EXAMPLE
+    generators:
+      - config_style : junos
+        section: top_level_hierarchical
+        template_file: SINGLE-DC2-INFRA_EXAMPLE.j2
+  - name: SINGLE-DC2-TENANT_EXAMPLE
+    generators:
+      - config_style : junos
+        section: top_level_hierarchical
+        template_file: SINGLE-DC2-INFRA_EXAMPLE.j2
+
+# ---------------------------------------------------------------------------- #
+#                                 Property Sets                                #
+# ---------------------------------------------------------------------------- #
+property_sets:
+
+  - name: SINGLE-COMMON
+    data:
+      - property_key: VRF_MGMT_NAME
+        property_value: SERV01
+        
+  - name: SINGLE-DC1-INFRA
+    data:
+      - property_key: PSLIST_SNMP_CLIENTS_SUBNETS
+        property_value: 172.16.84.0/27,172.16.94.0/27
+      - property_key: PSLIST_SNMP_TRAP_COLLECTORS
+        property_value: 172.16.17.134,172.16.17.135,172.16.17.136
+      - property_key: SNMP_LOCATION
+        property_value: Location_DC1
+
+  - name: SINGLE-DC2-INFRA
+    data:
+      - property_key: PSLIST_SNMP_CLIENTS_SUBNETS
+        property_value: 172.16.84.0/27,172.16.94.0/27
+      - property_key: PSLIST_SNMP_TRAP_COLLECTORS
+        property_value: 172.16.17.134,172.16.17.135,172.16.17.136
+      - property_key: SNMP_LOCATION
+        property_value: Location_DC2

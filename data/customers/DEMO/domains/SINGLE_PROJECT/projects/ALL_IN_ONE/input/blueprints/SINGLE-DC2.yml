@@ -1,0 +1,782 @@
+# ********************************************************
+#
+# Project: Apstra Provisioning Automation Framework
+#
+# Copyright (c) Juniper Networks, Inc., 2025. All rights reserved.
+#
+# Notice and Disclaimer: This code is licensed to you under the Apache 2.0 License (the "License"). You may not use this code except in compliance with the License. This code is not an official Juniper product. You can obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.html
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
+#
+# ********************************************************
+#
+# DISCLAIMER: The data contained in this YAML file is entirely fabricated and
+# intended solely for demo purposes. Any resemblance to real data is purely
+# coincidental. All values are simulated and are not
+# linked to any actual systems or environments.
+#
+# ********************************************************
+
+# ---------------------------------------------------------------------------- #
+#                                    Global                                    #
+# ---------------------------------------------------------------------------- #
+template: SINGLE-TEMPLATE
+bp_name: SINGLE-DC2
+ipv6: false
+esi_mac_msb: 6
+evpn_type_5_routes: true
+optimize_routing_zone_footprint: false
+fabric_mtu: 9170
+default_svi_l3_mtu: 9000
+max_evpn_routes_count: 100000
+max_external_routes_count: 5000
+max_fabric_routes_count: 10000
+
+# ---------------------------------------------------------------------------- #
+#                             Fabric-wide Resources                            #
+# ---------------------------------------------------------------------------- #
+resources:
+
+  - role: spine_leaf_link_ips
+    resource_pool: SINGLE-terraform
+  - role: to_generic_link_ips
+    resource_pool: SINGLE-terraform
+
+# ---------------------------------------------------------------------------- #
+#                                   Switches                                   #
+# ---------------------------------------------------------------------------- #
+switches:
+
+  - initial_device_name: spine1
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: SPINE01
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "66603"
+    loopback_ipv4: 172.20.66.0/32
+    tags:
+      - SPINE
+  - initial_device_name: spine2
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: SPINE02
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "66624"
+    loopback_ipv4: 172.20.66.1/32
+    tags:
+      - SPINE
+  - initial_device_name: RACK01_leaf1
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: BORDERLEAF01
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "66601"
+    tags:
+      - LEAF
+      - BORDER_LEAF
+    loopback_ipv4: 172.20.66.2/32
+  - initial_device_name: RACK01_leaf2
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: BORDERLEAF02
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "65602"
+    tags:
+      - LEAF
+      - BORDER_LEAF
+    loopback_ipv4: 172.20.66.3/32
+  - initial_device_name: RACK01_leaf3
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: LEAF01
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "66605"
+    tags:
+      - LEAF
+      - ACCESS_LEAF
+    loopback_ipv4: 172.20.66.4/32
+  - initial_device_name: RACK01_leaf4
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: LEAF02
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "66606"
+    tags:
+      - LEAF
+      - ACCESS_LEAF
+    loopback_ipv4: 172.20.66.5/32
+  - initial_device_name: RACK02_leaf1
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: LEAF03
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "65617"
+    tags:
+      - LEAF
+      - ACCESS_LEAF
+    loopback_ipv4: 172.20.66.6/32
+  - initial_device_name: RACK02_leaf2
+    initial_interface_map: Juniper_vEX__slicer-7x10-1
+    blueprint_device_name: LEAF04
+    # device_key: xxxxxxx
+    deploy_mode: undeploy
+    asn: "66628"
+    tags:
+      - LEAF
+      - ACCESS_LEAF
+    loopback_ipv4: 172.20.66.7/32
+    
+# ---------------------------------------------------------------------------- #
+#                                     Racks                                    #
+# ---------------------------------------------------------------------------- #
+
+# List of racks inherited from the rack template when instantiating the blueprint.  
+# These serve only as placeholders, as at least one rack must exist within a rack template.  
+# They will be removed during the blueprint creation once other racks are added to the blueprint.  
+placeholder_racks:
+  - SINGLE-TERRAFORM
+
+racks:
+  - name: RACK01
+    rack_type: SINGLE-RACK_2B2LF
+  - name: RACK02
+    rack_type: SINGLE-RACK_2LF
+
+# ---------------------------------------------------------------------------- #
+#                               Routing Policies                               #
+# ---------------------------------------------------------------------------- #
+routing_policies:
+
+  - name: SERV01
+    description: "Routing policy applied on BGP session towards EXT-RTR on SERV01"
+    import_policy: all
+    extra_exports:
+      - prefix: 172.23.61.136/29
+        action: permit
+    # aggregate_prefixes:
+    #   - 172.23.61.136/29
+    expect_default_ipv4: true
+  - name: SERV02
+    description: "Routing policy applied on BGP session towards EXT-RTR on SERV02"
+    import_policy: all
+    extra_exports:
+      - prefix: 172.23.66.112/28
+        action: permit
+    # aggregate_prefixes:
+    #   - 172.23.66.112/28
+    expect_default_ipv4: true
+  - name: SERV03
+    description: "Routing policy applied on BGP session towards EXT-RTR on SERV03"
+    import_policy: default_only
+    extra_exports:
+      - prefix: 172.23.84.128/27
+        action: permit
+      - prefix: 172.23.84.192/26
+        action: permit
+      - prefix: 172.23.84.168/29
+        action: permit
+      - prefix: 172.23.84.104/29
+        action: permit
+      - prefix: 172.23.84.176/29
+        action: permit
+      - prefix: 172.23.84.184/29
+        action: permit
+    expect_default_ipv4: true
+
+# ---------------------------------------------------------------------------- #
+#                                     VRFs                                     #
+# ---------------------------------------------------------------------------- #
+vrfs:
+
+  pre_existing:
+    - name: default
+  user_defined:
+    - name: SERV01
+      vlan_id: 51
+      vni: 100051
+      export_route_targets:
+        - 6666:6666
+      routing_policy: SERV01
+      resources:
+        - role: leaf_loopback_ips
+          resource_pool: SINGLE-DC2-Loopbacks-Internal-SERV01
+        - role: to_generic_link_ips
+          resource_pool: SINGLE-terraform
+    - name: SERV02
+      vlan_id: 52
+      vni: 100052
+      export_route_targets:
+        - 6666:6666
+      routing_policy: SERV02
+      resources:
+        - role: leaf_loopback_ips
+          resource_pool: SINGLE-DC2-Loopbacks-Internal-SERV02
+        - role: to_generic_link_ips
+          resource_pool: SINGLE-terraform
+    - name: SERV03
+      vlan_id: 53
+      vni: 100053
+      export_route_targets:
+        - 6666:6666
+      resources:
+        - role: leaf_loopback_ips
+          resource_pool: SINGLE-DC2-Loopbacks-Internal-SERV03
+        - role: to_generic_link_ips
+          resource_pool: SINGLE-terraform
+
+# ---------------------------------------------------------------------------- #
+#                               Virtual Networks                               #
+# ---------------------------------------------------------------------------- #
+virtual_networks:
+
+  - name: VN01
+    vni: 110211
+    type: vxlan
+    vrf: SERV01
+    l3_mtu: 1500
+    ipv4_connectivity_enabled: true
+    ipv4_subnet: 172.23.66.136/29
+    ipv4_virtual_gateway_enabled: true
+    ipv4_virtual_gateway: 172.23.66.137
+    export_route_targets:
+      - 6666:6666
+    bindings:
+      - vlan_id: 211
+        filters:
+          - system_type: switch
+            role: leaf
+            tag_ids:
+              - ACCESS_LEAF
+  - name: VN02
+    vni: 110212
+    type: vxlan
+    vrf: SERV02
+    l3_mtu: 1500
+    ipv4_connectivity_enabled: true
+    ipv4_subnet: 172.23.66.112/28
+    ipv4_virtual_gateway_enabled: true
+    ipv4_virtual_gateway: 172.23.66.113
+    export_route_targets:
+      - 6666:6666
+    bindings:
+      - vlan_id: 212
+        filters:
+          - system_type: switch
+            role: leaf
+            tag_ids:
+              - ACCESS_LEAF
+  # - name: VN03
+  #   vni: 110213
+  #   type: vxlan
+  #   vrf: SERV03
+  #   l3_mtu: 1500
+  #   ipv4_connectivity_enabled: true
+  #   ipv4_subnet: 172.23.66.96/28
+  #   ipv4_virtual_gateway_enabled: true
+  #   ipv4_virtual_gateway: 172.23.66.97
+  #   export_route_targets:
+  #     - 6666:6666
+  #   bindings:
+  #     - vlan_id: 213
+  #       filters:
+  #         - system_type: switch
+  #           role: leaf
+  #           tag_ids:
+  #             - ACCESS_LEAF
+
+# ---------------------------------------------------------------------------- #
+#                            Connectivity Templates                            #
+# ---------------------------------------------------------------------------- #
+connectivity_templates:
+
+  - name: IxC-EXT-RTR-SERV02
+    description: "CT for connection to EXT-RTR on VRF SERV02 - VLAN 1234"
+    tags:
+      - EXT-RTR-BL
+      - SERV02
+    primitives:
+      - name: ip_link_SERV02
+        is_a_root_primitive: true
+        type: ip_link
+        data:
+          vrf: SERV02
+          vlan_id: 1234
+          l3_mtu: 1500
+          ipv4_addressing_type: numbered
+          links:
+            - endpoint_1:
+                hostname: BORDERLEAF01
+                if_name: ae661
+                ipv4_addr: 192.168.66.201/31
+              endpoint_2:
+                hostname: EXT-RTR-01
+                if_name: null
+                ipv4_addr: 192.168.66.200/31
+            - endpoint_1:
+                hostname: BORDERLEAF02
+                if_name: ae663
+                ipv4_addr: 192.168.66.203/31
+              endpoint_2:
+                hostname: EXT-RTR-02
+                if_name: null
+                ipv4_addr: 192.168.66.202/31
+          child_primitives:
+            - bgp_peering_SERV02
+      - name: bgp_peering_SERV02
+        is_a_root_primitive: false
+        type: bgp_peering_generic_system
+        data:
+          ttl: 2
+          password: $9$wMY2oPfz9tOP5EyK8-dPfTzF/EhrW87IEyKMLVbs24aJG
+          ipv4_addressing_type: addressed
+          child_primitives:
+            - routing_policy_SERV02
+      - name: routing_policy_SERV02
+        is_a_root_primitive: false
+        type: routing_policy
+        data:
+          routing_policy: SERV02
+    bindings:
+      by_link_tag:
+        tags:
+          - EXT-RTR-BL
+
+  - name: CT-MASTER-BOND0
+    description: "CT for connection to Master - Bond0"
+    tags:
+      - MASTER
+      - BOND0
+    primitives:
+      - name: prim_virtual_network_single
+        is_a_root_primitive: true
+        type: virtual_network_single
+        data:
+          vn: VN02
+          # vn: VN03
+          tagged: true
+    bindings:
+      by_link_tag:
+        tags:
+          - MASTER
+          - BOND0
+
+  - name: CT-MASTER-BOND1
+    description: "CT for connection to Master - Bond1"
+    tags:
+      - MASTER
+      - BOND1
+    primitives:
+      - name: prim_virtual_network_multiple
+        is_a_root_primitive: true
+        type: virtual_network_multiple
+        data:
+          untagged_vn: VN01
+          tagged_vn:
+            - VN02
+            # - VN03
+    bindings:
+      by_link_tag:
+        tags:
+          - MASTER
+          - BOND1
+
+  - name: CT-WORKER-BOND1
+    description: "CT for connection to Worker - Bond1"
+    tags:
+      - WORKER
+      - BOND1
+    primitives:
+      - name: prim_virtual_network_single
+        is_a_root_primitive: true
+        type: virtual_network_single
+        data:
+          vn: VN01
+          tagged: true
+    bindings:
+      by_link_tag:
+        tags:
+          - WORKER
+          - BOND1
+
+# ---------------------------------------------------------------------------- #
+#                                  Configlets                                  #
+# ---------------------------------------------------------------------------- #
+import_configlets:
+
+  - name: SINGLE-SNMP
+    scope:
+      - condition: role
+        inclusion: in
+        filter:
+          # - spine
+          - leaf
+  - name: SINGLE-DC2-INFRA_EXAMPLE
+    scope:
+      - condition: role
+        inclusion: in
+        filter:
+          # - spine
+          - leaf
+  - name: SINGLE-DC2-TENANT_EXAMPLE
+    scope:
+      - condition: role
+        inclusion: in
+        filter:
+          # - spine
+          - leaf
+          
+# ---------------------------------------------------------------------------- #
+#                                 Property Sets                                #
+# ---------------------------------------------------------------------------- #
+import_property_sets:
+
+  - name: SINGLE-COMMON
+    sync_with_catalog: true
+  - name: SINGLE-DC2-INFRA
+    sync_with_catalog: true
+
+# ---------------------------------------------------------------------------- #
+#                                    Spines                                    #
+# ---------------------------------------------------------------------------- #
+spines:
+  - hostname: SPINE01
+    name: SPINE01
+    links:
+      - target_switch_hostname: BORDERLEAF01
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/2
+        spine_ip: 10.10.0.0/31
+        target_switch_if_name: ge-0/0/0
+        target_switch_ip: 10.10.0.1/31
+      - target_switch_hostname: BORDERLEAF02
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/3
+        spine_ip: 10.10.0.4/31
+        target_switch_if_name: ge-0/0/0
+        target_switch_ip: 10.10.0.5/31
+      - target_switch_hostname: LEAF01
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/0
+        spine_ip: 10.10.0.8/31
+        target_switch_if_name: ge-0/0/0
+        target_switch_ip: 10.10.0.9/31
+      - target_switch_hostname: LEAF02
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/1
+        spine_ip: 10.10.0.12/31
+        target_switch_if_name: ge-0/0/0
+        target_switch_ip: 10.10.0.13/31
+      - target_switch_hostname: LEAF03
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/4
+        spine_ip: 10.10.0.16/31
+        target_switch_if_name: ge-0/0/0
+        target_switch_ip: 10.10.0.17/31
+      - target_switch_hostname: LEAF04
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/5
+        spine_ip: 10.10.0.20/31
+        target_switch_if_name: ge-0/0/0
+        target_switch_ip: 10.10.0.21/31
+  - hostname: SPINE02
+    name: SPINE02
+    links:
+      - target_switch_hostname: BORDERLEAF01
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/2
+        spine_ip: 10.10.0.2/31
+        target_switch_if_name: ge-0/0/1
+        target_switch_ip: 10.10.0.3/31
+      - target_switch_hostname: BORDERLEAF02
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/3
+        spine_ip: 10.10.0.6/31
+        target_switch_if_name: ge-0/0/1
+        target_switch_ip: 10.10.0.7/31
+      - target_switch_hostname: LEAF01
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/0
+        spine_ip: 10.10.0.10/31
+        target_switch_if_name: ge-0/0/1
+        target_switch_ip: 10.10.0.11/31
+      - target_switch_hostname: LEAF02
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/1
+        spine_ip: 10.10.0.114/31
+        target_switch_if_name: ge-0/0/1
+        target_switch_ip: 10.10.0.115/31
+      - target_switch_hostname: LEAF03
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/4
+        spine_ip: 10.10.0.18/31
+        target_switch_if_name: ge-0/0/1
+        target_switch_ip: 10.10.0.19/31
+      - target_switch_hostname: LEAF04
+        lag: ""
+        lag_mode: null
+        speed: 10G
+        spine_if_name: ge-0/0/5
+        spine_ip: 10.10.0.22/31
+        target_switch_if_name: ge-0/0/1
+        target_switch_ip: 10.10.0.23/31
+
+# ---------------------------------------------------------------------------- #
+#                                Generic Systems                               #
+# ---------------------------------------------------------------------------- #
+generic_systems:
+
+  - hostname: EXT-RTR-01
+    asn: 65667
+    deploy_mode: deploy
+    external: true
+    links:
+      - generic_system_if_name: Port0
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - EXT-RTR-BL
+          - EXT-RTR-01
+          - BL1
+        target_switch_hostname: BORDERLEAF01
+        target_switch_if_name: ge-0/0/2
+        target_switch_if_transform_id: 1
+    name: EXT-RTR-01
+    port_channel_id_max: 661
+    port_channel_id_min: 661
+    tags:
+      - EXT-RTR
+      - EXT-RTR-01
+
+  - hostname: EXT-RTR-02
+    asn: 65667
+    deploy_mode: deploy
+    external: true
+    links:
+      - generic_system_if_name: Port0
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - EXT-RTR-BL
+          - EXT-RTR-02
+          - BL2
+        target_switch_hostname: BORDERLEAF02
+        target_switch_if_name: ge-0/0/2
+        target_switch_if_transform_id: 1
+    name: EXT-RTR-02
+    port_channel_id_max: 663
+    port_channel_id_min: 663
+    tags:
+      - EXT-RTR
+      - EXT-RTR-02
+
+  - hostname: SERVER01
+    asn: null
+    deploy_mode: deploy
+    external: false
+    links:
+      - generic_system_if_name: Port0
+        group_label: Bond1
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND1
+        target_switch_hostname: LEAF02
+        target_switch_if_name: ge-0/0/2
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port1
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND0
+        target_switch_hostname: LEAF02
+        target_switch_if_name: ge-0/0/3
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port2
+        group_label: Bond1
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND1
+        target_switch_hostname: LEAF01
+        target_switch_if_name: ge-0/0/2
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port3
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND0
+        target_switch_hostname: LEAF01
+        target_switch_if_name: ge-0/0/3
+        target_switch_if_transform_id: 1
+    name: SERVER01
+    port_channel_id_min: 300
+    port_channel_id_max: 309
+    tags:
+      - MASTER
+
+  - hostname: SERVER02
+    asn: null
+    deploy_mode: deploy
+    external: false
+    links:
+      - generic_system_if_name: Port0
+        group_label: Bond1
+        lag_mode: lacp_active
+        tags:
+          - WORKER
+          - BOND1
+        target_switch_hostname: LEAF02
+        target_switch_if_name: ge-0/0/6
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port1
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - WORKER
+          - BOND0
+        target_switch_hostname: LEAF02
+        target_switch_if_name: ge-0/0/5
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port2
+        group_label: Bond1
+        lag_mode: lacp_active
+        tags:
+          - WORKER
+          - BOND1
+        target_switch_hostname: LEAF01
+        target_switch_if_name: ge-0/0/6
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port3
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - WORKER
+          - BOND0
+        target_switch_hostname: LEAF01
+        target_switch_if_name: ge-0/0/5
+        target_switch_if_transform_id: 1
+    name: SERVER02
+    port_channel_id_min: 310
+    port_channel_id_max: 319
+    tags:
+      - WORKER
+      
+  - hostname: SERVER03
+    asn: null
+    deploy_mode: deploy
+    external: false
+    links:
+      - generic_system_if_name: Port0
+        group_label: Bond1
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND1
+        target_switch_hostname: LEAF04
+        target_switch_if_name: ge-0/0/2
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port1
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND0
+        target_switch_hostname: LEAF04
+        target_switch_if_name: ge-0/0/3
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port2
+        group_label: Bond1
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND1
+        target_switch_hostname: LEAF03
+        target_switch_if_name: ge-0/0/2
+        target_switch_if_transform_id: 1
+      - generic_system_if_name: Port3
+        group_label: Bond0
+        lag_mode: lacp_active
+        tags:
+          - MASTER
+          - BOND0
+        target_switch_hostname: LEAF03
+        target_switch_if_name: ge-0/0/3
+        target_switch_if_transform_id: 1
+    port_channel_id_min: 300
+    name: SERVER03
+    port_channel_id_max: 309
+    tags:
+      - MASTER
+
+  # - hostname: SERVER04
+  #   asn: null
+  #   deploy_mode: deploy
+  #   external: false
+  #   links:
+  #     - generic_system_if_name: Port0
+  #       group_label: Bond1
+  #       lag_mode: lacp_active
+  #       tags:
+  #         - WORKER
+  #         - BOND1
+  #       target_switch_hostname: LEAF04
+  #       target_switch_if_name: ge-0/0/6
+  #       target_switch_if_transform_id: 1
+  #     - generic_system_if_name: Port1
+  #       group_label: Bond0
+  #       lag_mode: lacp_active
+  #       tags:
+  #         - WORKER
+  #         - BOND0
+  #       target_switch_hostname: LEAF04
+  #       target_switch_if_name: ge-0/0/5
+  #       target_switch_if_transform_id: 1
+  #     - generic_system_if_name: Port2
+  #       group_label: Bond1
+  #       lag_mode: lacp_active
+  #       tags:
+  #         - WORKER
+  #         - BOND1
+  #       target_switch_hostname: LEAF03
+  #       target_switch_if_name: ge-0/0/6
+  #       target_switch_if_transform_id: 1
+  #     - generic_system_if_name: Port3
+  #       group_label: Bond0
+  #       lag_mode: lacp_active
+  #       tags:
+  #         - WORKER
+  #         - BOND0
+  #       target_switch_hostname: LEAF03
+  #       target_switch_if_name: ge-0/0/5
+  #       target_switch_if_transform_id: 1
+  #   name: SERVER04
+  #   port_channel_id_min: 310
+  #   port_channel_id_max: 319
+  #   tags:
+  #     - WORKER

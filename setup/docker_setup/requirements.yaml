@@ -1,0 +1,90 @@
+# ********************************************************
+#
+# Project: Apstra Provisioning Automation Framework
+#
+# Copyright (c) Juniper Networks, Inc., 2025. All rights reserved.
+#
+# Notice and Disclaimer: This code is licensed to you under the Apache 2.0 License (the "License"). You may not use this code except in compliance with the License. This code is not an official Juniper product. You can obtain a copy of the License at https://www.apache.org/licenses/LICENSE-2.0.html
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
+#
+# ********************************************************
+#
+# DESCRIPTION: This requirements file defines the required versions of Terraform and Python 
+# libraries needed for the project or deployment environment. It acts as a manifest 
+# to ensure that the correct versions of Terraform and the necessary Python libraries 
+# are installed, providing consistency across different environments and setups.
+#
+# ********************************************************
+
+# --- Terraform version to be installed using the `docker_install_terraform.py` script.
+terraform_version: 1.9.8
+
+# --- Apstra Terraform Provider version
+# provider_version: not set here but directly hardcoded in tools/terraform/provider.tf
+
+# --- Python 3 Libraries Configuration
+# List of Python 3 libraries and their respective versions to be installed or uninstalled
+# using the `docker_install_requirements.py` script. 
+# Each entry includes the name of the library and the specific version 
+# to ensure compatibility with the project requirements.
+#
+# To update the libraries, add or modify entries under the 'libraries' section.
+# Example:
+#   - name: <library_name>
+#     version: <version_number>
+#     action: <install|"uninstall -y">
+#
+# Generated command: `pip <action> <library_name>==<version_number>`
+
+libraries:
+  # Jinja2 and PyYAML versions not set here but within the dockerfile
+  # - name: Jinja2
+  #   version: "3.1.5"
+  #   action: install
+  # - name: PyYAML
+  #   version: "6.0.2"
+  #   action: install
+  - name: apstra-api-python
+    version: "0.2.1"
+    action: install
+  - name: certifi
+    version: "2025.1.31"
+    action: install
+  - name: chardet
+    action: "uninstall -y"
+  - name: charset-normalizer
+    version: "3.4.1"
+    action: install
+  - name: deepdiff
+    version: "8.2.0"
+    action: install
+  - name: idna
+    version: "3.10"
+    action: install
+  - name: markdown-it-py
+    version: "3.0.0"
+    action: install
+  - name: MarkupSafe
+    version: "3.0.2"
+    action: install
+  - name: mdurl
+    version: "0.1.2"
+    action: install
+  - name: orderly-set
+    version: "5.3.0"
+    action: install
+  - name: Pygments
+    version: "2.19.1"
+    action: install
+  - name: requests
+    version: "2.32.3"
+    action: install
+  - name: rich
+    version: "13.9.4"
+    action: install
+  - name: urllib3
+    version: "2.3.0"
+    action: install

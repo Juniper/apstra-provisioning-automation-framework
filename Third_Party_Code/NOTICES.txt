@@ -1,0 +1,85 @@
+NOTICES FOR THIRD-PARTY CODE/DEPENDENCIES
+
+Name: terraform
+URL: https://github.com/hashicorp/terraform
+License: [BSL-1.1] https://github.com/hashicorp/terraform/blob/main/LICENSE
+
+Name: terraform-provider-apstra
+URL: https://github.com/Juniper/terraform-provider-apstra
+License: [Apache 2.0] https://github.com/Juniper/terraform-provider-apstra/blob/main/LICENSE
+
+Name: apstra-api-python
+URL: https://github.com/Apstra/apstra-api-python
+License: [Apache 2.0] https://github.com/Apstra/apstra-api-python/blob/main/LICENSE
+
+Name: python-certifi
+URL: https://github.com/certifi/python-certifi
+License: [MPL-2.0] https://github.com/certifi/python-certifi/blob/master/LICENSE
+
+Name: charset-normalizer
+URL: https://github.com/jawah/charset_normalizer
+License: [MIT] https://github.com/jawah/charset_normalizer/blob/master/LICENSE
+
+Name: deepdiff
+URL: https://github.com/seperman/deepdiff
+License: [MIT] https://github.com/seperman/deepdiff/blob/master/LICENSE
+
+Name: idna
+URL: https://github.com/kjd/idna
+License: [BSD-3-Clause] https://github.com/kjd/idna/blob/master/LICENSE.md
+
+Name: jinja
+URL: https://github.com/pallets/jinja
+License: [BSD-3-Clause] https://github.com/pallets/jinja/blob/main/LICENSE.txt
+
+Name: markdown-it-py
+URL: https://github.com/executablebooks/markdown-it-py
+License: [MIT] https://github.com/executablebooks/markdown-it-py/blob/master/LICENSE
+
+Name: markupsafe
+URL: https://github.com/pallets/markupsafe/
+License: [BSD-3-Clause] https://github.com/pallets/markupsafe/blob/main/LICENSE.txt
+
+Name: mdurl
+URL: https://github.com/executablebooks/mdurl
+License: [MIT] https://github.com/executablebooks/mdurl/blob/master/LICENSE
+
+Name: orderly-set
+URL: https://github.com/seperman/orderly-set
+License: [MIT] https://github.com/seperman/orderly-set/blob/master/MIT-LICENSE
+
+Name: pip
+URL: https://github.com/pypa/pip
+License: [MIT] https://github.com/pypa/pip/blob/main/LICENSE.txt
+
+Name: pygments
+URL: https://github.com/pygments/pygments
+License: [BSD-2-Clause] https://github.com/pygments/pygments/blob/master/LICENSE
+
+Name: pyyaml
+URL: https://github.com/yaml/pyyaml/
+License: [MIT] https://github.com/yaml/pyyaml/blob/main/LICENSE
+
+Name: requests
+URL: https://github.com/psf/requests
+License: [Apache 2.0] https://github.com/psf/requests/blob/main/LICENSE
+
+Name: rich
+URL: https://github.com/Textualize/rich
+License: [MIT] https://github.com/Textualize/rich/blob/master/LICENSE
+
+Name: urllib3
+URL: https://github.com/urllib3/urllib3
+License: [MIT] https://github.com/urllib3/urllib3/blob/main/LICENSE.txt
+
+Name: cpython
+URL: https://github.com/python/cpython
+License: [PSF-v2] https://github.com/python/cpython/blob/main/LICENSE
+
+Name: curl
+URL: https://curl.se/
+License: [curl] https://curl.se/docs/copyright.html
+
+Name: unzip
+URL: http://www.info-zip.org/UnZip.html
+License: [Info-ZIP] http://www.info-zip.org/pub/infozip/license.html
