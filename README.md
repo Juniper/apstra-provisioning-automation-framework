@@ -38,13 +38,13 @@ This doesn't mean it will not work with other other releases, but it has been te
 
 Following steps will allow you to fully install and test the framework.
 
-- [🌐 Step 0 - Apstra Reachability](-step-0-apstra-reachability)
-- [📂 Step 1 - Clone the Repository](-step-1-clone-the-repository)
-- [⚙️ Step 2 - Install Dependencies](-step-2-install-dependencies)
-- [🔧 Step 3 - Initialize Terraform](-step-3-initialize-terraform)
-- [📝 Step 4 - Edit Your Input Data Files](-step-4-edit-your-input-data-files)
+- [🌐 Step 0 - Apstra Reachability](step-0-apstra-reachability)
+- [📂 Step 1 - Clone the Repository](step-1-clone-the-repository)
+- [⚙️ Step 2 - Install Dependencies](step-2-install-dependencies)
+- [🔧 Step 3 - Initialize Terraform](step-3-initialize-terraform)
+- [📝 Step 4 - Edit Your Input Data Files](step-4-edit-your-input-data-files)
+- [🚀 Step 5 - Run the Framework](step-5-run-the-framework)
 
-### 🌐 Step 0 - Apstra Reachability
 ### Step 0 - Apstra Reachability
 
 As obvious as it may seem, the first requirement is that the Juniper Apstra web interface (REST API) is **reachable** from the machine where you plan to install this framework.
@@ -53,11 +53,11 @@ For testing purposes, you don’t need a real physical data center infrastructur
 
 > If you wish to assign actual devices to your blueprints, **ensure they are acknowledged** in the Apstra GUI by placing them in the "Out of Service Ready" state. This will indicate your intent for Apstra to manage the devices. Follow the steps outlined [here](https://www.juniper.net/documentation/us/en/software/apstra5.0/apstra-user-guide/topics/task/device-acknowledge.html) to complete this process.
 
-### 📂 Step 1 - Clone the Repository
+### Step 1 - Clone the Repository
 
 **Clone this repository**, which contains all the necessary files to run the framework, into a suitable location on your system.
 
-### ⚙️ Step 2 - Install Dependencies
+### Step 2 - Install Dependencies
 
 The server where you install the framework can be **any machine**: a physical server, a laptop, a VM, an OpenShift pod, or even a Docker container. Regardless of where it's running, it must have the **necessary tools installed**:
  
@@ -88,7 +88,7 @@ The server where you install the framework can be **any machine**: a physical se
 💡 If you decide to run the Framework within **a dedicated 🐳 Docker container 🐳** — isolating it from the characteristics of your host machine — [this guide](./setup/docker_setup/DOCKER_SETUP.md) will help streamline the process.
 A set of prepared files and scripts are available to simplify the setup, automating the required steps and ensuring a reliable environment with minimal manual effort.
 
-### 🔧 Step 3 - Initialize Terraform
+### Step 3 - Initialize Terraform
 
 **Initialize the Terraform backend**, which will automatically install the Apstra Terraform Provider too. The Apstra Terraform provider version to be installed is specified in the [``provider.tf``](./tools/terraform/provider.tf) file.
 
@@ -117,7 +117,7 @@ Terraform has been successfully initialized!
 
 To complete this step successfully, an Internet connection is required to download the necessary provider plugins and modules for the specified version from the [Terraform Registry](https://registry.terraform.io/providers/Juniper/apstra/latest/docs). However, in scenarios where you need to run Terraform in an offline or restricted environment, you can pre-download the required dependencies and configure a local repository. For detailed instructions on how to set this up, refer to the guide [here](https://support.hashicorp.com/hc/en-us/articles/23562100651923-How-to-use-Terraform-CLI-with-Local-Mirror-for-Provider-Plugins-for-system-without-internet-access).
 
-### 📝 Step 4 - Edit Your Input Data Files
+### Step 4 - Edit Your Input Data Files
 
 Once all the environment is ready, you can proceed to **edit the YAML data files** that define the Apstra objects for your particular data center infrastructure.
 
@@ -129,7 +129,7 @@ For now, you can leave the other data files in [that directory](./data/customers
 
 Once you've tested the [``SINGLE_PROJECT``](./data/customers/DEMO/domains/SINGLE_PROJECT) domain, you can follow a similar process with the [``MULTI_PROJECT``](./data/customers/DEMO/domains/MULTI_PROJECT) domain and explore the results in the Apstra GUI.
 
-### 🚀 Step 5 - Run the Framework
+### Step 5 - Run the Framework
 
 To **run the framework** on your machine, navigate to the [``/tools/python``](./tools/python) directory and execute the command ``python3 main.py command=a`` in your terminal:
 
