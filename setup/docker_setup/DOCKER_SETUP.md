@@ -3,6 +3,7 @@ This guide walks you through spinning up a **ready-to-use Docker container** in 
 # Table of Contents
 - [Why Use a Docker Container](#why-use-a-docker-container)
 - [Setting Up the Framework in a Docker Container](#setting-up-the-framework-in-a-docker-container)
+- [Final Notes](#final-notes)
 
 # Why Use a Docker Container?  
 
@@ -16,7 +17,13 @@ We've made deployment simple using a **Python Docker container (available [here]
 
 # Setting Up the Framework in a Docker Container
 
-## 🐳 Step 1 - Install Docker
+- [🐳 Step 1: Install Docker](#step-1-install-docker)
+- [🌍 Step 2: Customize the Docker Compose file](#step-2-customize-the-docker-compose-file)
+- [🚀 Step 3: Run the Container](#step-3-run-the-container)
+- [🧪 Step 4: Container verifications](#step-4-container-verifications)
+
+
+## Step 1: Install Docker
 
 First, verify whether **Docker** is installed on your machine. On Unix-based systems, you can check this by running the following command:  
 
@@ -28,7 +35,7 @@ If Docker is not installed, proceed to install the **Docker Engine** by followin
 
 > ☝️ **Note**: Some versions of Docker may not include **Docker Compose** by default. Be sure to install it separately if needed.
 
-## 🌍 Step 2 - Customize the Docker Compose file
+## Step 2: Customize the Docker Compose file
 
 Edit the [`docker_compose_apaf.yaml`](docker_compose_apaf.yaml) file to set your timezone in the `TZ` variable.
 
@@ -43,7 +50,7 @@ services:
     [...]
 ```
 
-## 🚀 Step 3 - Run the Container
+## Step 3: Run the Container
 
 A [`dockerfile`](dockerfile), a [`docker_compose_apaf.yaml`](docker_compose_apaf.yaml), and a set of helper scripts have been prepared to simplify the process of getting the Docker Container up and running with minimal effort.
 
@@ -123,7 +130,7 @@ c5f4f9248acb   docker_apaf   "tail -f /dev/null"   1 second ago   Up Less than a
 
 If your machine runs a non-Unix-based operating system (e.g., Windows), start up the container by deploying the [`docker_compose_apaf.yaml`](docker_compose_apaf.yaml) file following the [official Docker Compose instructions](https://docs.docker.com/compose/gettingstarted/) for your platform.
 
-## 🧪 Step 4 - Container verifications
+## Step 4: Container verifications
 
 Perform the next verifications to guarantee that the Docker container is ready to run the Framework with all the necesessary requiremenets.
 
