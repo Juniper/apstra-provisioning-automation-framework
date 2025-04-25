@@ -1,4 +1,6 @@
-[[_TOC_]]
+# Table of Contents
+- [Day-0 Operations: Deploy Your First Apstra Blueprints](#day-0-operations-deploy-your-first-apstra-blueprints)
+- [Day-1 Operations: Modify Your Initial Deployments](#day-1-operations-modify-your-initial-deployments)
 
 ## Day-0 Operations: Deploy Your First Apstra Blueprints
 

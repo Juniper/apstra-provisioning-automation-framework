@@ -1,4 +1,10 @@
-[[_TOC_]]
+# Table of Contents
+- [Overview](#overview)
+- [Version Compatibility](#version-compatibility)
+- [Getting Started](#getting-started)
+- [Example Projects](#example-projects)
+- [Contributing](#contributing)
+
 
 # Overview
 

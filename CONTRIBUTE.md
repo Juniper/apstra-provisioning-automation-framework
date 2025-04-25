@@ -1,4 +1,9 @@
-[[_TOC_]]
+# Table of Contents
+- [Why Contribute?](#why-contribute)
+- [Stage 1: Setting Up Your GitHub Account](#stage-1-setting-up-your-github-account)
+- [Stage 2: Forking, Cloning and Branching](#stage-2-forking-cloning-and-branching)
+- [Stage 3: Adding, Committing and Pushing](#stage-3-adding-committing-and-pushing)
+- [Stage 4: Submitting Your Contribution](#stage-4-submitting-your-contribution)
 
 # Why Contribute?
 
@@ -10,7 +15,7 @@ If you believe you can improve the framework by developing a new feature/functio
 
 This document explains the general process that you should follow when contributing your work.
 
-# Stage 1: Setting Up Your GitHub Account 🛠️
+# Stage 1: Setting Up Your GitHub Account
 
 This first stage needs only to be done once, and should only take several minutes. Once you have followed the steps in this stage, you can move onto the second stage and skip this first stage altogether in the future.
 
@@ -24,7 +29,7 @@ You can use your personal email address as your primary email address when you r
 
 In order to strenghten your account's security and to gain access to all GitHub.com features, it is strongly recommended to verify your email address following [the instructions here](https://docs.github.com/en/get-started/signing-up-for-github/verifying-your-email-address).
 
-# Stage 2: Forking, Cloning and Branching 🔀
+# Stage 2: Forking, Cloning and Branching
 
 ## Fork from Upstream
 
@@ -38,7 +43,7 @@ Most likely you are developing on a separate remote system, so you will need to 
 
 On your development system you should create a branch (a separate copy of the repository) where you can add your code. A good practice is to simply call this branch "development". You can do this with the Git command ```git checkout -b development```
 
-# Stage 3: Adding, Committing and Pushing 🚀
+# Stage 3: Adding, Committing and Pushing
 
 ## Add Your Work
 
@@ -54,7 +59,7 @@ Repeat the add and commit steps until you are done, and have enough content that
 
 The act of pushing will transfer the work that you have committed on your local development Git server to the central servers at GitHub.com. To achieve this, following our previous example, use the ```git push origin development``` command. The name ```origin``` is a reserved name that simply means the remote parent where the repository was cloned from (if you are working with Git on a remote development system, ```origin``` will typically be the parent repository under your GitHub.com account). 
 
-# Stage 4: Submitting  Your Contribution 📬
+# Stage 4: Submitting Your Contribution
 
 ## Create a Pull Request
 

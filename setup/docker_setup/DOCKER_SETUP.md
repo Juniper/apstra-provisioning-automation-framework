@@ -1,6 +1,8 @@
 This guide walks you through spinning up a **ready-to-use Docker container** in seconds — complete with all required libraries and dependencies — for running the **Apstra Provisioning Automation Framework** in a clean, isolated environment.
 
-[[_TOC_]]
+# Table of Contents
+- [Why Use a Docker Container](#why-use-a-docker-container)
+- [Setting Up the Framework in a Docker Container](#setting-up-the-framework-in-a-docker-container)
 
 # Why Use a Docker Container?  
 
