@@ -959,6 +959,10 @@ class Scope_Manager:
                         # Remove the folder to allocate the "temporary reverted input tgz file"
                         remove_directory(self.input_tgz_reverted_path)
 
+                        # Remove the executions folder if exists and empty
+                        if os.path.isdir(self.executions_dir) and not os.listdir(self.executions_dir):
+                            remove_directory(self.executions_dir)
+
                 else:
                     logger.warning(f'❌ Unexpected exit_code provided: {exit_code}.\nValid values: {exit_messages}')
 
@@ -1510,7 +1514,7 @@ class Scope_Manager:
                 while True:
                     rprint('\n:pushpin:')
                     options = [
-                        '✅ Proceed with the Plan and execute Terraform',
+                        '🚀 Proceed with the Plan and execute Terraform',
                         '🚪 Exit and discard the Terraform Plan',
                     ]
 
@@ -1722,7 +1726,7 @@ class Scope_Manager:
         '''
 
         message = (
-            "🤔 Do you want to revert the changes? "
+            "🔄 Do you want to revert the changes? "
             "If not, the framework execution will end, allowing you to review offline and take necessary actions."
         )
 
@@ -1744,7 +1748,7 @@ class Scope_Manager:
         '''
 
         message = (
-            "🤔 Please reconfirm that you really want to roll back to a previous state"
+            "🔄 Please reconfirm that you really want to roll back to a previous state"
         )
 
         # In not interactive mode, unconditionally proceed with the rollback
@@ -1765,7 +1769,7 @@ class Scope_Manager:
         '''
 
         message = (
-            "🤔 Would you like to continue with the framework execution taking these warnings into consideration?\n"
+            "👉 Would you like to continue with the framework execution taking these warnings into consideration?\n"
             "If not, the execution will stop, giving you the opportunity to review the situation offline and take appropriate actions"
         )
 
@@ -1780,7 +1784,7 @@ class Scope_Manager:
         '''
 
         message = (
-            "🤔 Do you want to retrieve and save the current configurations and device contexts of each deployed device?"
+            "📚 Do you want to retrieve and save the current configurations and device contexts of each deployed device?"
         )
 
         # In not interactive mode, unconditionally proceed without saving the device data
@@ -1954,15 +1958,14 @@ class Scope_Manager:
                         delete_bps([bp_name])
         print("\n")
 
-        if not self.first_execution_reverted:
-            # -- Identify and list the Apstra sections other than blueprints that have changes compared to the last successful execution (that may exist or not)
-            list_non_bp_menus_w_changes, non_bp_diff = get_non_bp_changes_tgz(self.get('wip_execution_0_input_tgz_file'), self.get('wip_execution_0_input_tgz_rollback_file'))
-            for menu in list_non_bp_menus_w_changes:
-                self.handle_execution_data_file('update', {f'changes_in_{menu}': 'Yes'})
+        # -- Identify and list the Apstra sections other than blueprints that have changes compared to the last successful execution (that may exist or not)
+        list_non_bp_menus_w_changes, non_bp_diff = get_non_bp_changes_tgz(self.get('wip_execution_0_input_tgz_file'), self.get('wip_execution_0_input_tgz_rollback_file'))
+        for menu in list_non_bp_menus_w_changes:
+            self.handle_execution_data_file('update', {f'changes_in_{menu}': 'Yes'})
 
-            # -- Remove all the added objects to the Non-blueprint menus in Apstra (to avoid conflicts later on if the framework tries to recreate them)
-            if list_non_bp_menus_w_changes and non_bp_diff:
-                remove_non_bp_added(non_bp_diff)
+        # -- Remove all the added objects to the Non-blueprint menus in Apstra (to avoid conflicts later on if the framework tries to recreate them)
+        if list_non_bp_menus_w_changes and non_bp_diff:
+            remove_non_bp_added(non_bp_diff)
 
     def generate_customer_history_report(self, option):
         '''
@@ -2435,7 +2438,7 @@ class Scope_Manager:
                 self.save_commit_check()
             else:
                 message = (
-                    "🤔 Do you want to initiate a Commit Check process to analyze the impact of these config changes on deployed devices?"
+                    "🧐 Do you want to initiate a Commit Check process to analyze the impact of these config changes on deployed devices?"
                 )
                 if prompt_for_confirmation(message) == "yes":
                     logger.info("🕵️  Starting the commit check process. Assessing configuration changes...")
@@ -2450,7 +2453,161 @@ class Scope_Manager:
         except Exception as e:
             logger.error(f"❌ An unexpected error occurred during the Commit Check process: {e}\n")
 
+    def get_revision(self, bp_name, commit_comment):
+        '''
+        Get the details of a particular revision in the Time Voyager from the AOS API for a given Blueprint.
 
+        Args:
+            bp_name (str): Blueprint name.
+            commit_comment (str): Commit comment of the searched revision.
+
+        Returns:
+            str: Template ID, or None if not found or an error occurs.
+        '''
+        try:
+            list_bp_revisions = self.get_bp_revision_list(bp_name)
+            for item in list_bp_revisions:
+                if item.get('description') == commit_comment:
+                    return item
+            return {}
+        except Exception as e:
+            logger.error(f"❌ Error: Failed to retrieve a revision with the description '{commit_comment} for the blueprint '{bp_name}' - {e}")
+            return {}
+
+    def get_permanent_revisions(self, bp_name):
+        '''
+        Retrieve all revisions that have been marked as permanent (user_saved=True) 
+        for a given blueprint from the AOS Time Voyager.
+
+        Args:
+            bp_name (str): Blueprint name.
+
+        Returns:
+            list: A list of revision dictionaries where 'user_saved' is True.
+        '''
+        try:
+            list_bp_revisions = self.get_bp_revision_list(bp_name)
+
+            if not list_bp_revisions:
+                return []
+
+            # Filter revisions where 'user_saved' is explicitly True
+            permanent_revisions = [rev for rev in list_bp_revisions if rev.get('user_saved') is True]
+
+            # if not permanent_revisions:
+            #     logger.info(f"ℹ️ No permanent revisions found for blueprint '{bp_name}'")
+
+            return permanent_revisions
+
+        except Exception as e:
+            logger.error(f"❌ Failed to retrieve permanent revisions for blueprint '{bp_name}': {e}")
+            return []
+
+    def remove_revision(self, bp_name, revision):
+        '''
+        Get the details of a particular revision in the Time Voyager from the AOS API for a given Blueprint.
+
+        Args:
+            bp_name (str): Blueprint name.
+            commit_comment (str): Commit comment of the searched revision.
+
+        Returns:
+            str: Template ID, or None if not found or an error occurs.
+        '''
+        try:
+            aos_ip = self.get('aos_ip')
+            aos_token = self.get('aos_token')
+            bp_id = get_bp_id(bp_name)
+            revision_id = revision.get('revision_id')
+            revision_timestamp = revision.get('created_at', None)
+            if revision_timestamp:
+                dt = datetime.strptime(revision_timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+                formatted_revision_timestamp = dt.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                formatted_revision_timestamp = "N/A"
+            url = f'https://{aos_ip}/api/blueprints/{bp_id}/revisions/{revision_id}'
+            headers = {'AuthToken': aos_token, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache'}
+            response = requests.delete(url, headers=headers, verify=False)
+            response.raise_for_status()
+            if response.status_code == 202:                
+                logger.info(
+                    f"🕰️  Revision '{revision.get('revision_id', 'N/A')}' of blueprint '{bp_name}' removed from the Time Voyager.\n"
+                    f"👤 User: '{revision.get('user', 'N/A')}' | 🌐 IP: '{revision.get('user_ip', 'N/A')}' | 🕒 Created at: {formatted_revision_timestamp}\n"
+                    f"💬 Description: '{revision.get('description', 'N/A')}'\n"
+                )
+                return True
+            else:
+                return False
+            
+
+        except Exception as e:
+            logger.error(f"❌ Error: Failed to remove revision '{revision_id}' for the blueprint '{bp_name}' - {e}")
+            return {}
+        
+    def get_oldest_revision(self, bp_name):
+        '''
+        Retrieve the oldest revision (based on creation timestamp) for a given blueprint from the AOS Time Voyager.
+
+        Args:
+            bp_name (str): Blueprint name.
+
+        Returns:
+            dict: The oldest revision entry, or an empty dict if not found or an error occurs.
+        '''
+        try:
+            list_bp_revisions = self.get_bp_revision_list(bp_name)
+
+            if not list_bp_revisions:
+                logger.warning(f"❌ No revisions found for blueprint '{bp_name}'")
+                return {}
+
+            # Find the revision with the earliest 'created_at' timestamp
+            oldest = min(list_bp_revisions, key=lambda r: r.get('created_at', '9999-12-31T23:59:59Z'))
+            return oldest
+
+        except Exception as e:
+            logger.error(f"❌ Failed to retrieve the oldest revision for blueprint '{bp_name}': {e}")
+            return {}
+
+    def keep_revision(self, bp_name, revision_id, commit_comment):
+        '''
+        Save a particular revision in the Time Voyager permanently from the AOS API for a given Blueprint.
+        Args:
+            bp_name (str): Blueprint name.
+            revision_id (str): Revision ID of the revision to save permanently.
+            commit_comment (str): Commit comment of the searched revision.
+
+        Returns:
+            str: Template ID, or None if not found or an error occurs.
+        '''
+        try:
+            aos_ip = self.get('aos_ip')
+            aos_token = self.get('aos_token')
+            bp_id = get_bp_id(bp_name)
+            url = f'https://{aos_ip}/api/blueprints/{bp_id}/revisions/{revision_id}/keep'
+            headers = {'AuthToken': aos_token, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache'}
+            response = requests.post(url, headers=headers, verify=False)
+
+            # The API call returns a 400 error code regardless of the actual outcome of the operation.
+            # A workaround is used to validate the true result of the operation.
+
+            # response.raise_for_status()
+            # if response.status_code == 202:
+            #     logger.info(f'Revision "{revision_id}" of blueprint "{bp_name}" saved in the Time Voyager permanently.')
+            #     return True
+            # else:
+            #     return False
+
+            revision = self.get_revision(bp_name, commit_comment)
+            if revision.get("user_saved", False):
+                logger.info(f"💾 Revision '{revision_id}' of blueprint '{bp_name}' in the Time Voyager saved permanently.\n")
+                return True
+            else:
+                raise Exception(f"Revision '{revision_id}' of blueprint '{bp_name}' in the Time Voyager NOT saved permanently.\n")
+        except Exception as e:
+            logger.error(f'❌ Error: Failed to save revision "{revision_id}" of blueprint "{bp_name}" in the Time Voyager permanently - {e}')
+            return False
+        
     def deploy_bp(self, bp_name, version, deploy_comment):
         '''
         Deploy the given staging version from the AOS API for a given blueprint.
@@ -2540,25 +2697,31 @@ class Scope_Manager:
                     if self.interactive:
                         input("⏭️  Press enter to initiate the rollback process...\n")
                 
-                revision = get_revision(bp_name, deploy_comment_w_execution_id)
+                revision = self.get_revision(bp_name, deploy_comment_w_execution_id)
                 if revision:
-
                     revision_timestamp = revision.get('created_at', None)
                     if revision_timestamp:
                         dt = datetime.strptime(revision_timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
                         formatted_revision_timestamp = dt.strftime("%Y-%m-%d %H:%M:%S")
                     else:
                         formatted_revision_timestamp = "N/A"
-
                     print("\n")
                     logger.info(
-                        f"🚀🕰️  Revision '{revision.get('revision_id', 'N/A')}' of blueprint '{bp_name}' saved to the Time Voyager.\n"
+                        f"🕰️  Revision '{revision.get('revision_id', 'N/A')}' of blueprint '{bp_name}' saved to the Time Voyager.\n"
                         f"👤 User: '{revision.get('user', 'N/A')}' | 🌐 IP: '{revision.get('user_ip', 'N/A')}' | 🕒 Created at: {formatted_revision_timestamp}\n"
                         f"💬 Description: '{revision.get('description', 'N/A')}'\n"
                     )
+                    
+                    permanent_revisions = self.get_permanent_revisions(bp_name)
+                    if len(permanent_revisions) >= max_permanent_revisions:
+                        logger.info(
+                            f"🧮 Time Voyager quota check for blueprint '{bp_name}': {len(permanent_revisions)} out of {max_permanent_revisions} permanent slots used.\n"
+                            f"🧹 Removing the oldest saved revision to make room for the most recent one."
+                        )
+                        oldest_revision = self.get_oldest_revision(bp_name)
+                        self.remove_revision(bp_name, oldest_revision)
 
-                    keep_revision(bp_name, version, deploy_comment_w_execution_id)
-
+                    self.keep_revision(bp_name, version, deploy_comment_w_execution_id)
 
                 return
             
@@ -5393,8 +5556,8 @@ def get_non_bp_changes_tgz(current_tgz, previous_tgz):
                                 'added', 'changed', and 'removed'.
     '''
 
-    if not (current_tgz and previous_tgz):
-        logger.warning("❌ Missing one or both TGZ files. No comparison will be performed.")
+    if not current_tgz:
+        logger.warning("❌ Missing current TGZ file. No comparison will be performed.")
         return [], {}
 
     current_dir = tempfile.mkdtemp()
@@ -5403,7 +5566,8 @@ def get_non_bp_changes_tgz(current_tgz, previous_tgz):
     try:
 
         extract_tgz_to_dir(current_tgz, current_dir)
-        extract_tgz_to_dir(previous_tgz, previous_dir)
+        if previous_tgz:
+            extract_tgz_to_dir(previous_tgz, previous_dir)
 
         # Call function to get non-blueprint changes
         non_bp_menus_w_changes, all_non_bp_diff = get_non_bp_changes(current_dir, previous_dir)
@@ -6289,84 +6453,6 @@ def get_deploy_status(bp_name):
     except Exception as e:
         logger.error(f'❌ Error: Failed to retrieve blueprint deploy status - {e}')
         return {}
-
-def get_time_voyager(bp_name):
-    '''
-    Get a list of the revisions of the blueprint from the AOS API using a given blueprint name.
-
-    Args:
-        bp_name (str): Blueprint name.
-
-    Returns:
-        dict: revisions.
-    '''
-    try:
-        sm = Scope_Manager()
-        aos_ip = sm.get('aos_ip')
-        aos_token = sm.get('aos_token')
-        bp_id = get_bp_id(bp_name)
-        url = f'https://{aos_ip}/api/blueprints/{bp_id}/revisions'
-        headers = {'AuthToken': aos_token, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache'}
-        response = requests.get(url, headers=headers, verify=False)
-        response.raise_for_status()
-        data = response.json()
-        return data
-    except Exception as e:
-        logger.error(f'❌ Error: Failed to retrieve blueprint revisions (time voyager) - {e}')
-        return {}
-
-def get_revision(bp_name, commit_comment):
-    '''
-    Get the details of a particular revision in the Time Voyager from the AOS API for a given Blueprint.
-
-    Args:
-        bp_name (str): Blueprint name.
-        commit_comment (str): Commit comment of the searched revision.
-
-    Returns:
-        str: Template ID, or None if not found or an error occurs.
-    '''
-    try:
-        data = get_time_voyager(bp_name)
-        for item in data.get('items', []):
-            if item.get('description') == commit_comment:
-                return item
-        return {}
-
-    except Exception as e:
-        logger.error(f"❌ Error: Failed to retrieve a revision with the description '{commit_comment} for the blueprint '{bp_name}' - {e}")
-        return {}
-
-def keep_revision(bp_name, revision_id, commit_comment):
-    '''
-    Save a particular revision in the Time Voyager permanently from the AOS API for a given Blueprint.
-    Args:
-        bp_name (str): Blueprint name.
-        revision_id (str): Revision ID of the revision to save permanently.
-        commit_comment (str): Commit comment of the searched revision.
-
-    Returns:
-        str: Template ID, or None if not found or an error occurs.
-    '''
-    try:
-        sm = Scope_Manager()
-        aos_ip = sm.get('aos_ip')
-        aos_token = sm.get('aos_token')
-        bp_id = get_bp_id(bp_name)
-        url = f'https://{aos_ip}/api/blueprints/{bp_id}/revisions/{revision_id}/keep'
-        headers = {'AuthToken': aos_token, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache'}
-        response = requests.post(url, headers=headers, verify=False)
-        # response.raise_for_status()
-        # if response.status_code == 202:
-        #     logger.info(f'Revision "{revision_id}" of blueprint "{bp_name}" saved in the Time Voyager permanently.')
-        #     return True
-        # else:
-        #     return False
-        logger.info(f'💾 Revision "{revision_id}" of blueprint "{bp_name}" in the Time Voyager saved permanently.\n')
-        return True
-    except Exception as e:
-        logger.error(f'❌ Error: Failed to save revision "{revision_id}" of blueprint "{bp_name}" in the Time Voyager permanently - {e}')
-        return False
     
 def revert_bp(bp_name):
     '''
@@ -6867,7 +6953,7 @@ def monitor_config_push_status(blueprints):
 
         if isinstance(blueprints, list):
             for bp_name in blueprints:
-                logger.info(f"🔄 Starting deployment status check for blueprint '{bp_name}'...")
+                logger.info(f"👀 Starting deployment status check for blueprint '{bp_name}'...")
 
                 # Polling for process completion
                 success = False  # Flag for current blueprint status
@@ -7167,7 +7253,7 @@ def run_apaf_terraform(input_params):
             )
 
             # -- Ensure the creation and management of "execution" folders in the "wip" staging area
-            sm.manage_execution_dirs("initial_stage", threshold=50)
+            sm.manage_execution_dirs("initial_stage")
 
             if is_terraform_apply or is_terraform_destroy:
 
@@ -7261,25 +7347,27 @@ def run_apaf_terraform(input_params):
                         sm.commit_check(display)
 
                     while True:
-                        table_final_deploy = build_table_deploy(sm.terraform_command, sm.uncommitted_bps, sm.get('post_commit_action'), sm.get('post_commit_comment'), 'final', list_non_bp_menus_w_changes_last_exec)
-                        print('\r')
-                        print_panel_deploy_handling_plan(table_final_deploy, "POST-EVENTS")
                         if 'terraform destroy' in sm.terraform_command:
+                            table_final_deploy = build_table_deploy(sm.terraform_command, sm.uncommitted_bps, 'commit', sm.get('post_commit_comment'), 'final', list_non_bp_menus_w_changes_last_exec)
+                            print('\r')
+                            print_panel_deploy_handling_plan(table_final_deploy, "POST-EVENTS")
                             print("\n")
                             logger.info("Since 'terraform destroy' is an IRREVERSIBLE action, 'commit' is the only allowed option at this stage.")
                             rprint('\n:pushpin:')
                             options = [
-                                'Proceed with the plan',
-                                'Change "Commit comment"',
+                                '🚀 Proceed with the plan',
+                                '💬 Change "Commit comment"',
                             ]
                         else:
+                            table_final_deploy = build_table_deploy(sm.terraform_command, sm.uncommitted_bps, sm.get('post_commit_action'), sm.get('post_commit_comment'), 'final', list_non_bp_menus_w_changes_last_exec)
+                            print('\r')
+                            print_panel_deploy_handling_plan(table_final_deploy, "POST-EVENTS")
                             rprint('\n:pushpin:')
                             options = [
-                                'Proceed with the plan',
-                                'Change "Commit comment"',
-                                'Change "Action to perform"',
+                                '🚀 Proceed with the plan',
+                                '💬 Change "Commit comment"',
+                                '🏷️  Change "Action to perform"',
                             ]
-
                         # -- In not interactive mode, unconditionally choose to proceed with the plan (option 1)
                         if sm.interactive:
                             opt = display_menu (options)
@@ -7338,6 +7426,10 @@ def run_apaf_terraform(input_params):
 # ---------------------------------------------------------------------------- #
 #                               Global variables                               #
 # ---------------------------------------------------------------------------- #
+
+# Maximum number of permanently saved revisions allowed in the Time Voyager for a given blueprint.
+# Limit imposed by Apstra.
+max_permanent_revisions = 25
 
 execution_history_options = [
     'all-customers',
