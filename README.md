@@ -31,11 +31,21 @@ This doesn't mean it will not work with other other releases, but it has been te
 
 # Getting Started
 
+- [Step-by-Step Process](step-by-step-process)
+- [Process Summary](#process-summary)
+  
 ## Step-by-Step Process
 
 Following steps will allow you to fully install and test the framework.
 
+- [🌐 Step 0 - Apstra Reachability](-step-0-apstra-reachability)
+- [📂 Step 1 - Clone the Repository](-step-1-clone-the-repository)
+- [⚙️ Step 2 - Install Dependencies](-step-2-install-dependencies)
+- [🔧 Step 3 - Initialize Terraform](-step-3-initialize-terraform)
+- [📝 Step 4 - Edit Your Input Data Files](-step-4-edit-your-input-data-files)
+
 ### 🌐 Step 0 - Apstra Reachability
+### Step 0 - Apstra Reachability
 
 As obvious as it may seem, the first requirement is that the Juniper Apstra web interface (REST API) is **reachable** from the machine where you plan to install this framework.
  
