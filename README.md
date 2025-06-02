@@ -38,12 +38,20 @@ This doesn't mean it will not work with other other releases, but it has been te
 
 Following steps will allow you to fully install and test the framework.
 
-- [🌐 Step 0: Apstra Reachability](#step-0-apstra-reachability)
-- [📂 Step 1: Clone the Repository](#step-1-clone-the-repository)
-- [⚙️ Step 2: Install Dependencies](#step-2-install-dependencies)
-- [🔧 Step 3: Initialize Terraform](#step-3-initialize-terraform)
-- [📝 Step 4: Edit Your Input Data Files](#step-4-edit-your-input-data-files)
-- [🚀 Step 5: Run the Framework](#step-5-run-the-framework)
+- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
+- [Version Compatibility](#version-compatibility)
+- [Getting Started](#getting-started)
+  - [Step-by-Step Process](#step-by-step-process)
+    - [Step 0: Apstra Reachability](#step-0-apstra-reachability)
+    - [Step 1: Clone the Repository](#step-1-clone-the-repository)
+    - [Step 2: Install Dependencies](#step-2-install-dependencies)
+    - [Step 3: Initialize Terraform](#step-3-initialize-terraform)
+    - [Step 4: Edit Your Input Data Files](#step-4-edit-your-input-data-files)
+    - [Step 5: Run the Framework](#step-5-run-the-framework)
+  - [Process Summary](#process-summary)
+- [Example Projects](#example-projects)
+- [Contributing](#contributing)
 
 ### Step 0: Apstra Reachability
 
@@ -123,7 +131,7 @@ Once all the environment is ready, you can proceed to **edit the YAML data files
 
 Refer to this repository’s documentation (Wiki section) for details on the different data files, objects, and variables.
 
-For demo pourposes, [two sample domains](#example-projects) have been created under the [``/data/customers/DEMO``](./data/customers/DEMO) customer directory. To quickly test the first one [``SINGLE_PROJECT``](./data/customers/DEMO/domains/SINGLE_PROJECT) domain on your Apstra infrastructure, edit the [``credentials.yml``](./data/customers/DEMO/domains/SINGLE_PROJECT/private/credentials.yml) file with your Apstra server details and login credentials. 
+For demo pourposes, [two sample domains](#example-projects) have been created under the [``/data/customers/DEMO``](./data/customers/DEMO) customer directory. To quickly test the first [``SINGLE_PROJECT``](./data/customers/DEMO/domains/SINGLE_PROJECT) domain on your Apstra infrastructure, edit the [``credentials.yml``](./data/customers/DEMO/domains/SINGLE_PROJECT/private/credentials.yml) file with your Apstra server details and login credentials. 
 
 For now, you can leave the other data files in [that directory](./data/customers/DEMO/domains/SINGLE_PROJECT) unchanged, since the predefined objects (under design, resources and blueprints [``input``](./data/customers/DEMO/domains/SINGLE_PROJECT/projects/ALL_IN_ONE/input/) subdirectories) describe a couple of sample data centers and will be deployed automatically.
 
@@ -214,9 +222,16 @@ For a comprehensive guide on all available options and interactive menus through
 
 ## Process Summary
 
-While **Steps 0, 1, 2, and 3** are typically required **only once per machine** to set up the entire ecosystem and get the framework functional (or when something breaks and needs to be restarted), it's important to note that, after that, the usual workflow for running the Framework is a continuous cycle of just **Steps 4 and 5**: 📝 edit input data files (Step 4) → 🚀 run the Framework (Step 5) → 📝 edit the input data files (Step 4) → 🚀 run the Framework (Step 5)… and so on.
+While **Steps 0, 1, 2, and 3** are typically required **only once per machine** to set up the entire ecosystem and get the framework functional (or when something breaks and needs to be restarted), it's important to note that, after that, the usual workflow for running the Framework is a continuous cycle of just **Steps 4 and 5**:
+
+```mermaid
+flowchart LR
+    A["📝<br>**Edit Input Data Files**<br>*(Step 4)*"] --> B["🚀<br>**Run the Framework**<br>*(Step 5)*"]
+    B --> A
+```
 
 Nothing really complex — just a smooth and repetitive flow 🔄.
+
 
 # Example Projects
 
