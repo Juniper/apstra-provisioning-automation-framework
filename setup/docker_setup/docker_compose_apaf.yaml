@@ -33,5 +33,5 @@ services:
       - ../../:/apaf
     environment:
       TZ: "Europe/Madrid" # 📝 Set to the correct timezone for your environment (adjust as needed)
-      PATH: /:$PATH
+      # PATH: /:$PATH
     command: tail -f /dev/null
