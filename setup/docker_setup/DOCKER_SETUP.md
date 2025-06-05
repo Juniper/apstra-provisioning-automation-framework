@@ -188,7 +188,7 @@ drwxr-xr-x    4 root     root           128 Apr  8 09:18 __pycache__
 ```
 
 ### Verify Installed Python libraries
-Check that the required Python libraries (``pyyaml``, ``jinja2``, and the ones set in [`requirements.yaml`](requirements.yaml) and other dependencies are installed within the container.
+Check that the required Python libraries (``pyyaml``, ``jinja2``, and the ones set in [`requirements.yaml`](requirements.yaml)) and other dependencies are installed within the container.
 
 ```bash
 $ docker exec -it docker_apaf pip list
@@ -238,7 +238,7 @@ Ensure that you can run the framework on the container by executing:
 docker exec -it docker_apaf python3 main.py command=a
 ```
 
-The main menu should appar, prompting the user to select a numeric option:
+The main menu should appear, prompting the user to select a numeric option:
 
 ```
                                                                 👋😊
