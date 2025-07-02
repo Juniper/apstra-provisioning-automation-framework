@@ -24,7 +24,7 @@ This doesn't mean it will not work with other other releases, but it has been te
 
 | Component                  | Version        |
 |----------------------------|----------------|
-| [**Apstra**](https://supportportal.juniper.net/s/article/Apstra-Supported-Releases-of-Juniper-Apstra?language=en_US)                 | 4.2.1.1, 4.2.2, 5.0.0, 5.1.0      |
+| [**Apstra**](https://supportportal.juniper.net/s/article/Apstra-Supported-Releases-of-Juniper-Apstra?language=en_US)                 | 4.2.1.1, 4.2.2, 5.0.0, 5.1.0, 6.0.0      |
 | [**Terraform**](https://github.com/hashicorp/terraform/releases)            | 1.9.8          |
 | [**Terraform Apstra Provider**](https://github.com/Juniper/terraform-provider-apstra/releases/) | 0.85.1         |
 
