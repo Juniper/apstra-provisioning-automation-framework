@@ -1,6 +1,6 @@
 # Table of Contents
-- [Day-1 Operations: Deploy Your First Apstra Blueprints](#day-0-operations-deploy-your-first-apstra-blueprints)
-- [Day-2 Operations: Modify Your Initial Deployments](#day-1-operations-modify-your-initial-deployments)
+- [Day-1 Operations: Deploy Your First Apstra Blueprints](#day-1-operations-deploy-your-first-apstra-blueprints)
+- [Day-2 Operations: Modify Your Initial Deployments](#day-2-operations-modify-your-initial-deployments)
 
 ## Day-1 Operations: Deploy Your First Apstra Blueprints
 
