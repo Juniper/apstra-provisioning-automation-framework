@@ -1,8 +1,8 @@
 # Table of Contents
-- [Day-0 Operations: Deploy Your First Apstra Blueprints](#day-0-operations-deploy-your-first-apstra-blueprints)
-- [Day-1 Operations: Modify Your Initial Deployments](#day-1-operations-modify-your-initial-deployments)
+- [Day-1 Operations: Deploy Your First Apstra Blueprints](#day-0-operations-deploy-your-first-apstra-blueprints)
+- [Day-2 Operations: Modify Your Initial Deployments](#day-1-operations-modify-your-initial-deployments)
 
-## Day-0 Operations: Deploy Your First Apstra Blueprints
+## Day-1 Operations: Deploy Your First Apstra Blueprints
 
 If you want to experience the framework firsthand, this repository includes two demo setups for testing purposes, located in the [``/data/customers/DEMO``](./data/customers/DEMO) directory.
 
@@ -30,7 +30,7 @@ Both domains can be deployed on the same Apstra infrastructure, as they create d
   2. Deploy the [**`L2_INFRA_DC1`**](./data/customers/DEMO/domains/MULTI_PROJECT/projects/L2_INFRA_DC1) and [**`L2_INFRA_DC2`**](./data/customers/DEMO/domains/MULTI_PROJECT/projects/L2_INFRA_DC2) projects.
   3. Deploy the [**`L3_TENANT_DC1`**](./data/customers/DEMO/domains/MULTI_PROJECT/projects/L3_TENANT_DC1) and [**`L3_TENANT_DC2`**](./data/customers/DEMO/domains/MULTI_PROJECT/projects/L3_TENANT_DC2) projects.
 
-## Day-1 Operations: Modify Your Initial Deployments
+## Day-2 Operations: Modify Your Initial Deployments
 
 After deploying one or both of the proposed domains, you can proceed with modifying the input YAML files to create, update, or remove resources within Apstra — common tasks typically performed during daily operations in real-world deployments.
 
