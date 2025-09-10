@@ -78,8 +78,8 @@ resource "apstra_rack_type" "racks" {
     for access_switch in try(each.value.access_switches, []) :
     access_switch.name => {
       logical_device_id = data.apstra_logical_device.logical_devices[access_switch.logical_device].id
-      count             = try(access_switch.count, 0)
-      esi_lag_info      = try(access_switch.esi_lag_info, {})
+      count             = try(access_switch.count, 1)
+      esi_lag_info      = try(access_switch.esi_lag_info, null)
       tag_ids = can(access_switch.tags) ? [
         for tag_name in access_switch.tags :
         apstra_tag.apstra_tags[tag_name].id
