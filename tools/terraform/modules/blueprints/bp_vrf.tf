@@ -35,6 +35,7 @@ resource "apstra_datacenter_routing_zone" "vrfs" {
   dhcp_servers         = try(each.value.dhcp_servers, null)
   export_route_targets = try(each.value.export_route_targets, null)
   import_route_targets = try(each.value.import_route_targets, null)
+  junos_evpn_irb_mode  = try(each.value.junos_evpn_irb_mode, null)
   routing_policy_id    = try(local.routing_policy_ids["${each.value.bp}.${each.value.routing_policy}"], null)
 }
 
