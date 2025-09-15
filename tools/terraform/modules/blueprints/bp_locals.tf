@@ -30,6 +30,10 @@ locals {
     for ipv4_pool_name, ipv4_pool_data in module.resources.ipv4_pool_resources :
     ipv4_pool_name => ipv4_pool_data.id
   }
+  ipv6_pool_ids_from_local_project = {
+    for ipv6_pool_name, ipv6_pool_data in module.resources.ipv6_pool_resources :
+    ipv6_pool_name => ipv6_pool_data.id
+  }
 
   # Mapping of each resource name with its corresponding ID
   # for those resources received from the parent projects
@@ -51,14 +55,22 @@ locals {
       ipv4_pool_name => ipv4_pool_data.id
     }
   ]...)
+  ipv6_pool_ids_from_parent_project = merge([
+    for project, project_data in var.parent_project_outputs : {
+      for ipv6_pool_name, ipv6_pool_data in try(project_data.outputs.ipv6_pool_resources, {}) :
+      ipv6_pool_name => ipv6_pool_data.id
+    }
+  ]...)
 
   resource_pool_ids = merge(
     local.asn_pool_ids_from_local_project,
     local.vni_pool_ids_from_local_project,
     local.ipv4_pool_ids_from_local_project,
+    local.ipv6_pool_ids_from_local_project,
     local.asn_pool_ids_from_parent_project,
     local.vni_pool_ids_from_parent_project,
-    local.ipv4_pool_ids_from_parent_project
+    local.ipv4_pool_ids_from_parent_project,
+    local.ipv6_pool_ids_from_parent_project
   )
 
   # Mapping of each template name with its corresponding ID

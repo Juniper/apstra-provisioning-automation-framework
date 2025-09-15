@@ -351,3 +351,7 @@ output "ipv4_pool_resources" {
   description = "Mapping of each IPv4 pool with its corresponding ID"
   value       = module.resources.ipv4_pool_resources
 }
+output "ipv6_pool_resources" {
+  description = "Mapping of each IPv6 pool with its corresponding ID"
+  value       = module.resources.ipv6_pool_resources
+}

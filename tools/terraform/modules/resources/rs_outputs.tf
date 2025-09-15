@@ -28,3 +28,7 @@ output "ipv4_pool_resources" {
   description = "Mapping of each IPv4 pool with its corresponding ID"
   value       = apstra_ipv4_pool.apstra_ipv4_pool
 }
+output "ipv6_pool_resources" {
+  description = "Mapping of each IPv6 pool with its corresponding ID"
+  value       = apstra_ipv6_pool.apstra_ipv6_pool
+}

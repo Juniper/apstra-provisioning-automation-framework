@@ -43,3 +43,12 @@ resource "apstra_ipv4_pool" "apstra_ipv4_pool" {
   name    = each.value.name
   subnets = each.value.subnets
 }
+
+# IPv6 resource pools
+resource "apstra_ipv6_pool" "apstra_ipv6_pool" {
+  for_each = {
+    for ipv6_pool in try(local.resources.ipv6_pools, []) : ipv6_pool.name => ipv6_pool
+  }
+  name    = each.value.name
+  subnets = each.value.subnets
+}

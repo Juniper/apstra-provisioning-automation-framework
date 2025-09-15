@@ -4123,6 +4123,28 @@ def get_ip_pools():
         logger.error(f"❌ Error: Failed to retrieve IP Pools - {e}")
         return {}
 
+def get_ipv6_pools():
+    '''
+    Get the IPv6 Pools from the AOS API.
+
+    Returns:
+        dict: IPv6 Pool data if successful, otherwise an empty dictionary.
+    '''
+    try:
+        sm = Scope_Manager()
+        aos_ip = sm.get('aos_ip')
+        aos_token = sm.get('aos_token')
+        url = f'https://{aos_ip}/api/resources/ipv6-pools'
+        headers = {'AuthToken': aos_token, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache'}
+
+        response = requests.get(url, headers=headers, verify=False)
+        response.raise_for_status()  # Will raise HTTPError for bad responses (4xx, 5xx)
+        return response.json()
+
+    except Exception as e:
+        logger.error(f"❌ Error: Failed to retrieve IPv6 Pools - {e}")
+        return {}
+
 def get_vni_pools():
     '''
     Get the VNI Pools from the AOS API.
@@ -4314,6 +4336,27 @@ def get_ip_pool_id(ip_pool_name):
         logger.error(f"❌ Error: Failed to retrieve IP Pool ID for '{ip_pool_name}' - {e}")
         return None
 
+def get_ipv6_pool_id(ipv6_pool_name):
+    '''
+    Get the IPv6 Pool ID from the AOS API for a given IPv6 Pool.
+
+    Args:
+        ipv6_pool_name (str): IP Pool name.
+
+    Returns:
+        str: IP Pool ID, or None if not found or an error occurs.
+    '''
+    try:
+        data = get_ipv6_pools()
+        for item in data.get('items', []):
+            if item.get('display_name') == ipv6_pool_name:
+                return item.get('id')
+        return None
+
+    except Exception as e:
+        logger.error(f"❌ Error: Failed to retrieve IPv6 Pool ID for '{ipv6_pool_name}' - {e}")
+        return None
+    
 def get_vni_pool_id(vni_pool_name):
     '''
     Get the VNI Pool ID from the AOS API for a given VNI Pool.
@@ -4668,6 +4711,10 @@ def remove_non_bp_added(input_diff):
                                 if apstra_object == 'ipv4_pools':
                                     ip_pool_id = get_ip_pool_id(added_name)
                                     if delete_ip_pool(ip_pool_id):
+                                        logger.info(f'🚮 Removed from Apstra via API: {menu} -> {apstra_object} -> {added_name}')
+                                elif apstra_object == 'ipv6_pools':
+                                    ipv6_pool_id = get_ipv6_pool_id(added_name)
+                                    if delete_ipv6_pool(ipv6_pool_id):
                                         logger.info(f'🚮 Removed from Apstra via API: {menu} -> {apstra_object} -> {added_name}')
                                 elif apstra_object == 'vni_pools':
                                     vni_pool_id = get_vni_pool_id(added_name)

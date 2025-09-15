@@ -97,6 +97,10 @@ output "ipv4_pool_resources" {
   description = "Mapping of each IPv4 pool with its corresponding ID"
   value       = module.blueprints.ipv4_pool_resources
 }
+output "ipv6_pool_resources" {
+  description = "Mapping of each IPv6 pool with its corresponding ID"
+  value       = module.blueprints.ipv6_pool_resources
+}
 
 # ----- Output variables // Retrieved from module: blueprints
 
