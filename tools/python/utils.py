@@ -13,6 +13,8 @@
 #
 # Third-Party Code: This code may depend on other components under separate copyright notice and license terms. Your use of the source code for those components is subject to the terms and conditions of the respective license as noted in the Third-Party source code file.
 #
+# Copyright Hewlett Packard Enterprise Development LP.
+#
 # ********************************************************
 
 '''
@@ -4584,6 +4586,32 @@ def delete_ip_pool(ip_pool_id):
     except requests.exceptions.RequestException as e:
         logger.error(f"❌ Error: Failed to delete IP Pool - {e}")
         return False
+
+def delete_ipv6_pool(ipv6_pool_id):
+    '''
+    Delete an IPv6 Pool by its ID.
+
+    Args:
+        ipv6_pool_id (str): IPv6 Pool ID.
+
+    Returns:
+        bool: True if deleted successfully, False otherwise.
+    '''
+    try:
+        sm = Scope_Manager()
+        aos_ip = sm.get('aos_ip')
+        aos_token = sm.get('aos_token')
+        url = f'https://{aos_ip}/api/resources/ipv6-pools/{ipv6_pool_id}'
+        headers = {'AuthToken': aos_token, 'Content-Type': 'application/json', 'Cache-Control': 'no-cache'}
+
+        response = requests.delete(url, headers=headers, verify=False)
+        response.raise_for_status()  # Raise error for any bad status code
+
+        return response.status_code == 202
+    except requests.exceptions.RequestException as e:
+        logger.error(f"❌ Error: Failed to delete IPv6 Pool - {e}")
+        return False
+
 
 def delete_vni_pool(vni_pool_id):
     '''
