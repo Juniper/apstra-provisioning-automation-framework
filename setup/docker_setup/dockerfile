@@ -31,12 +31,11 @@ FROM python:3.12.9-alpine3.21
 ARG PYTHON3_PIP_VERSION=25.0.1
 ARG PYYAML_VERSION=6.0.2
 ARG JINJA2_VERSION=3.1.5
-ARG CURL_VERSION=8.12.1-r1
 
 # ********************************************************
 
 # --- Install Curl required for later installation of Terraform
-RUN apk add --no-cache curl=${CURL_VERSION}
+RUN apk add --no-cache curl
 
 # --- Set working directory and copy required files into the container
 WORKDIR /apaf
